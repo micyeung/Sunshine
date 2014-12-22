@@ -1,6 +1,5 @@
 package com.example.micyeung.sunshine.app;
 
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.net.Uri;
@@ -39,6 +38,10 @@ public class ForecastFragment extends Fragment implements LoaderManager.LoaderCa
     // Specify the columns we need.
     private static final int FORECAST_LOADER = 0;
     private String mLocation;
+    public static final String SELECTED_KEY = "selected_position";
+    private int mCursorPosition = ListView.INVALID_POSITION;
+    private ListView mListView;
+    private boolean mUseTodayLayout;
 
     private static final String[] FORECAST_COLUMNS = {
         // In this case the id needs to be fully qualified with a table name, since
@@ -65,6 +68,17 @@ public class ForecastFragment extends Fragment implements LoaderManager.LoaderCa
     public static final int COL_WEATHER_MIN_TEMP = 4;
     public static final int COL_LOCATION_SETTING = 5;
     public static final int COL_WEATHER_CONDITION_ID = 6;
+
+    /**
+     * A callback interface that all activities containing this fragment must implement.
+     * This mechanism allows activities to be notified of item selections
+     */
+    public interface Callback {
+        /**
+         * DetailFragmentCallback for when an items has been selected
+         */
+        public void onItemSelected(String date);
+    }
 
 
     public ForecastFragment() {
@@ -129,22 +143,32 @@ public class ForecastFragment extends Fragment implements LoaderManager.LoaderCa
 
         View rootView = inflater.inflate(R.layout.fragment_main, container, false);
 
-        final ListView listView = (ListView) rootView.findViewById(R.id.listview_forecast);
-        listView.setAdapter(forecastAdapter);
-        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        mListView = (ListView) rootView.findViewById(R.id.listview_forecast);
+        mListView.setAdapter(forecastAdapter);
+        mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
 
                 Cursor cursor = forecastAdapter.getCursor();
 
                 if (cursor!=null && cursor.moveToPosition(position)) {
+                    // Let MainActivity do the work of figuring out:
+                    // on phone, launch DetailActivity;
+                    // on tablet, replace DetailFragment
+                    ((Callback)getActivity())
+                            .onItemSelected(cursor.getString(COL_WEATHER_DATE));
 
-                    Intent launchDetailActivityIntent = new Intent(getActivity(), DetailActivity.class)
-                            .putExtra(DetailActivity.DATE_KEY, cursor.getString(COL_WEATHER_DATE));
-                    startActivity(launchDetailActivityIntent);
+                    // When item is clicked, store clicked cursor position
+                    mCursorPosition = position;
                 }
+                forecastAdapter.setUseTodayLayout(mUseTodayLayout);
             }
         });
+        // Use the savedInstanceState to restore the selected position
+        // when screen's rotated so we can scroll back to the selected position
+        if (savedInstanceState != null && savedInstanceState.containsKey(SELECTED_KEY)) {
+            mCursorPosition = savedInstanceState.getInt(SELECTED_KEY);
+        }
         return rootView;
     }
 
@@ -184,6 +208,19 @@ public class ForecastFragment extends Fragment implements LoaderManager.LoaderCa
         // Swap the new cursor in.  (The framework will take care of closing the
         // old cursor once we return.)
         forecastAdapter.swapCursor(cursor);
+        if (mCursorPosition != ListView.INVALID_POSITION) {
+            mListView.smoothScrollToPosition(mCursorPosition);
+        }
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        // When rotated, the current selected list item needs to be saved. However, when no item is selected,
+        // we don't want mCursorPosition to be set to ListView.INVALID_POSITION, so check for that first.
+        if (mCursorPosition != ListView.INVALID_POSITION) {
+            outState.putInt(SELECTED_KEY,mCursorPosition);
+        }
+        super.onSaveInstanceState(outState);
     }
 
     @Override
@@ -192,5 +229,15 @@ public class ForecastFragment extends Fragment implements LoaderManager.LoaderCa
         // above is about to be closed.  We need to make sure we are no
         // longer using it.
         forecastAdapter.swapCursor(null);
+    }
+
+    public void setUseTodayLayout(boolean useTodayLayout) {
+        mUseTodayLayout = useTodayLayout;
+        if (forecastAdapter != null) {
+            // Need this null check because it's possible that forecastAdapter is null, because
+            // MainActivity.onCreate() method (which calls ForecastFragment.setUseTodayLayout()) happens before forecastAdapter
+            // is initialized in ForecastFragment's onCreateView() method
+            forecastAdapter.setUseTodayLayout(useTodayLayout);
+        }
     }
 }

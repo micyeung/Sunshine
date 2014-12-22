@@ -1,12 +1,14 @@
 package com.example.micyeung.sunshine.app;
 
-import android.content.SharedPreferences;
+import android.annotation.TargetApi;
+import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.preference.ListPreference;
 import android.preference.Preference;
 import android.preference.PreferenceActivity;
 import android.preference.PreferenceManager;
-import android.view.KeyEvent;
+import android.support.annotation.Nullable;
 
 import com.example.micyeung.sunshine.app.data.WeatherContract;
 
@@ -91,4 +93,14 @@ public class SettingsActivity extends PreferenceActivity
         return true;
     }
 
+    @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
+    @Nullable
+    @Override
+    // This is called when the Up button is selected
+    // We want to navigate to the previous running instance of the MainActivity, not create a brand new one
+    // FLAG_ACTIVITY_CLEAR_TOP indicates that we should check if the MainActivity is already running in the task,
+    // and to use that one instead of creating a new MainActivity instance
+    public Intent getParentActivityIntent() {
+        return super.getParentActivityIntent().addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+    }
 }

@@ -20,6 +20,9 @@ public class ForecastAdapter extends CursorAdapter {
     private final int VIEW_TYPE_FUTURE_DAY = 1;
     public static final String LOG_TAG = ForecastAdapter.class.getSimpleName();
 
+    // Flag to determine if the layout for today in the ForecastFragment should be special, or looks like everyone else.
+    // This is ultimately determined by whether it's a phone (special Today layout) or tablet (not special).
+    private boolean mUseTodayLayout = true;
 
     public static class ViewHolder {
         public final ImageView iconView;
@@ -41,9 +44,13 @@ public class ForecastAdapter extends CursorAdapter {
         super(context, c, flags);
     }
 
+    public void setUseTodayLayout(boolean useTodayLayout) {
+        mUseTodayLayout = useTodayLayout;
+    }
+
     @Override
     public int getItemViewType(int position) {
-        return (position == 0) ? VIEW_TYPE_TODAY : VIEW_TYPE_FUTURE_DAY;
+        return (position == 0 && mUseTodayLayout) ? VIEW_TYPE_TODAY : VIEW_TYPE_FUTURE_DAY;
     }
 
     @Override

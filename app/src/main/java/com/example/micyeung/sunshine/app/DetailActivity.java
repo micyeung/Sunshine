@@ -14,8 +14,16 @@ public class DetailActivity extends ActionBarActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detail);
         if (savedInstanceState == null) {
+            // Create the detail fragment, set its date string, and add it to the activity using a fragment transaction
+            String date = getIntent().getStringExtra(DATE_KEY);
+            Bundle arguments = new Bundle();
+            arguments.putString(DATE_KEY,date);
+
+            DetailFragment detailFragment = new DetailFragment();
+            detailFragment.setArguments(arguments);
+
             getSupportFragmentManager().beginTransaction()
-                    .add(R.id.container, new DetailFragment())
+                    .add(R.id.weather_detail_container, detailFragment)
                     .commit();
         }
     }

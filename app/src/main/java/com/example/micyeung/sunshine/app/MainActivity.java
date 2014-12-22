@@ -3,34 +3,17 @@ package com.example.micyeung.sunshine.app;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
+import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v7.app.ActionBarActivity;
-import android.support.v7.app.ActionBar;
-import android.support.v4.app.Fragment;
-import android.os.Bundle;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
-import android.view.ViewGroup;
-import android.os.Build;
-import android.widget.ArrayAdapter;
-import android.widget.ListView;
-
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.List;
 
 
-public class MainActivity extends ActionBarActivity {
+public class MainActivity extends ActionBarActivity implements ForecastFragment.Callback {
     private final String LOG_TAG = MainActivity.class.getSimpleName();
+    private boolean mTwoPane;
 
     @Override
     protected void onDestroy() {
@@ -67,11 +50,30 @@ public class MainActivity extends ActionBarActivity {
         super.onCreate(savedInstanceState);
         Log.i("MainActivity","onCreate");
         setContentView(R.layout.activity_main);
-        if (savedInstanceState == null) {
-            getSupportFragmentManager().beginTransaction()
-                    .add(R.id.container, new ForecastFragment())
-                    .commit();
+        if (findViewById(R.id.weather_detail_container) != null) {
+            // The detail container view will be present only in large screen layouts (sw600dp)
+            // This view is created only inn the sw600dp activity_main, so its presence means it's a two-pane layout
+            mTwoPane = true;
+
+            // Since it's two-pane mode, we show the detail view in this main activity by adding or replacing
+            // the detail fragment using a fragment transaction
+            // If savedInstanceState exists, then we should let the system handle restoring the detail fragment,
+            // otherwise, we have to add in the detail fragment dynamically
+            if (savedInstanceState == null) {
+                getSupportFragmentManager().beginTransaction()
+                        .replace(R.id.weather_detail_container,new DetailFragment())
+                        .commit();
+            }
+        } else {
+            mTwoPane = false;
         }
+
+        // If it's two-pane mode, then we don't use today-layout for the master (left) layout, i.e. first
+        // row of the master looks like the other rows
+        // Else, in a one-pane mode, the first row looks different, more emphasized, bigger image, etc.
+        ForecastFragment forecastFragment = (ForecastFragment)getSupportFragmentManager()
+                .findFragmentById(R.id.fragment_forecast);
+        forecastFragment.setUseTodayLayout(!mTwoPane);
     }
 
 
@@ -113,4 +115,26 @@ public class MainActivity extends ActionBarActivity {
         }
     }
 
+    @Override
+    public void onItemSelected(String date) {
+        if (mTwoPane) {
+            // How to pass the selected date to the DetailFragment?
+            // Ans: we create an empty DetailFragment, then set its arguments.
+            // In two-pane mode, show the detail view in this activity by adding or replacing the detail fragment using a fragment transaction.
+            Bundle args = new Bundle();
+            args.putString(DetailActivity.DATE_KEY,date);
+
+            DetailFragment detailFragment = new DetailFragment();
+            detailFragment.setArguments(args);
+            getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.weather_detail_container,detailFragment)
+                    .commit();
+
+        } else {
+            Intent launchDetailActivityIntent = new Intent(this, DetailActivity.class)
+                    .putExtra(DetailActivity.DATE_KEY, date);
+            startActivity(launchDetailActivityIntent);
+
+        }
+    }
 }
