@@ -5,6 +5,7 @@
         <item name="actionBarStyle">@style/ActionBar.Solid.Sunshine</item>
         <item name="colorPrimary">@color/sunshine_blue</item>
         <item name="colorPrimaryDark">@color/sunshine_dark_blue</item>
+        <item name="colorAccent">@color/sunshine_yellow</item>
     </style>
 
     <style name="ForecastTheme" parent="AppTheme">
