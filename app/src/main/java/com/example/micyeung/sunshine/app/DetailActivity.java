@@ -2,7 +2,9 @@ package com.example.micyeung.sunshine.app;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
+import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 
@@ -13,6 +15,9 @@ public class DetailActivity extends ActionBarActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detail);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+
         if (savedInstanceState == null) {
             // Create the detail fragment, set its date string, and add it to the activity using a fragment transaction
             String date = getIntent().getStringExtra(DATE_KEY);
@@ -26,6 +31,9 @@ public class DetailActivity extends ActionBarActivity {
                     .add(R.id.weather_detail_container, detailFragment)
                     .commit();
         }
+
+        ActionBar ab = getSupportActionBar();
+        ab.setDisplayHomeAsUpEnabled(true);
     }
 
 

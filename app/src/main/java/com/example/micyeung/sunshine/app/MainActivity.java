@@ -5,7 +5,9 @@ import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -48,8 +50,11 @@ public class MainActivity extends ActionBarActivity implements ForecastFragment.
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Log.i("MainActivity","onCreate");
+        Log.i("MainActivity", "onCreate");
         setContentView(R.layout.activity_main);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+
         if (findViewById(R.id.weather_detail_container) != null) {
             // The detail container view will be present only in large screen layouts (sw600dp)
             // This view is created only inn the sw600dp activity_main, so its presence means it's a two-pane layout
@@ -76,12 +81,12 @@ public class MainActivity extends ActionBarActivity implements ForecastFragment.
         forecastFragment.setUseTodayLayout(!mTwoPane);
 
 
-        //getSupportActionBar().setDisplayUseLogoEnabled(true);
-        //getSupportActionBar().setDisplayHomeAsUpEnabled(false);
-        //getSupportActionBar().setDisplayShowHomeEnabled(true);
-        //getSupportActionBar().setLogo(R.drawable.ic_logo);
-        //getSupportActionBar().setDisplayShowTitleEnabled(false);
-        //getSupportActionBar().setBackgroundDrawable(new ColorDrawable(Color.parseColor("#0000ff")));
+        ActionBar ab = getSupportActionBar();
+        ab.setDisplayUseLogoEnabled(true);//
+        //        ab.setDisplayHomeAsUpEnabled(false);
+        ab.setDisplayShowHomeEnabled(true);
+        ab.setLogo(R.drawable.ic_logo);
+        ab.setDisplayShowTitleEnabled(false);
 
     }
 
