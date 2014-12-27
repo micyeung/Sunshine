@@ -1,12 +1,10 @@
 package com.example.micyeung.sunshine.app;
 
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.ListPreference;
 import android.preference.Preference;
 import android.preference.PreferenceActivity;
 import android.preference.PreferenceManager;
-import android.view.KeyEvent;
 
 import com.example.micyeung.sunshine.app.data.WeatherContract;
 
@@ -67,6 +65,9 @@ public class SettingsActivity extends PreferenceActivity
         // Are we starting the preference activity?
         if (!mBindingPreference) {
             if (preference.getKey().equals(getString(R.string.pref_location_key))) {
+                // Still using FetchWeatherTask here.
+                // We can replace this with using the SyncAdapter if we like.
+
                 FetchWeatherTask weatherTask = new FetchWeatherTask(this);
                 String location = value.toString();
                 weatherTask.execute(location);

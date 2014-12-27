@@ -3,30 +3,14 @@ package com.example.micyeung.sunshine.app;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
+import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v7.app.ActionBarActivity;
-import android.support.v7.app.ActionBar;
-import android.support.v4.app.Fragment;
-import android.os.Bundle;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
-import android.view.ViewGroup;
-import android.os.Build;
-import android.widget.ArrayAdapter;
-import android.widget.ListView;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.List;
+import com.example.micyeung.sunshine.app.sync.SunshineSyncAdapter;
 
 
 public class MainActivity extends ActionBarActivity {
@@ -72,6 +56,11 @@ public class MainActivity extends ActionBarActivity {
                     .add(R.id.container, new ForecastFragment())
                     .commit();
         }
+
+
+        // Initializes Sync Adapter. If we're using other ways of pulling data
+        // e.g. with FetchWeatherTask or SunshineService, comment this line out.
+        SunshineSyncAdapter.initializeSyncAdapter(this);
     }
 
 

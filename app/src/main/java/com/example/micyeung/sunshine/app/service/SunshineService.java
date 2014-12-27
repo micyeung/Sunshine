@@ -1,9 +1,13 @@
-package com.example.micyeung.sunshine.app;
+package com.example.micyeung.sunshine.app.service;
 
+import android.app.IntentService;
+import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.Intent;
 import android.net.Uri;
-import android.os.AsyncTask;
 import android.util.Log;
+
+import com.example.micyeung.sunshine.app.WeatherDataParser;
 
 import org.json.JSONException;
 
@@ -15,27 +19,24 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 
 /**
- * Created by micyeung on 11/21/14.
+ * Created by micyeung on 12/27/14.
  */
-// This fetches the weather data from the web through an AsyncTask.
+// This fetches the weather data from the web through a service.
 // This is called from ForecastFragment.updateWeather()
-// Compare with SunshineService and SunshineSyncAdapter.
+// Compare with FetchWeatherTask and SunshineSyncAdapter.
 
-public class FetchWeatherTask extends AsyncTask<String, Void, Void> {
-    private final String LOG_TAG = FetchWeatherTask.class.getSimpleName();
+public class SunshineService extends IntentService {
+    public static final String LOG_TAG = SunshineService.class.getSimpleName();
+    public static final String LOCATION_QUERY_EXTRA = "lqe";
 
-    private final Context mContext;
-
-    public FetchWeatherTask(Context context) {
-        mContext = context;
+    public SunshineService() {
+        super("SunshineService");
     }
 
     @Override
-    protected Void doInBackground(String... params) {
-        if (params.length == 0) {
-            return null;
-        }
-        String locationQuery = params[0];
+    protected void onHandleIntent(Intent intent) {
+        String locationQuery = intent.getStringExtra(LOCATION_QUERY_EXTRA);
+
         String format = "json";
         String units = "metric";
         int numDays = 14;
@@ -63,7 +64,7 @@ public class FetchWeatherTask extends AsyncTask<String, Void, Void> {
             InputStream inputStream = urlConnection.getInputStream();
             StringBuffer buffer = new StringBuffer();
             if (inputStream == null) {
-                return null;
+                return;
             }
             reader = new BufferedReader(new InputStreamReader(inputStream));
 
@@ -90,11 +91,20 @@ public class FetchWeatherTask extends AsyncTask<String, Void, Void> {
         }
         WeatherDataParser wdp = new WeatherDataParser();
         try {
-            wdp.getWeatherDataFromJson(forecastJsonStr, numDays, locationQuery, mContext);
+            wdp.getWeatherDataFromJson(forecastJsonStr, numDays, locationQuery, this);
         } catch (JSONException e) {
             Log.e(LOG_TAG, e.toString());
         }
-        // This will only happen if there was an error getting or parsing the forecast
-        return null;
+    }
+
+    public static class AlarmReceiver extends BroadcastReceiver {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            Intent sendIntent = new Intent(context, SunshineService.class);
+            sendIntent.putExtra(SunshineService.LOCATION_QUERY_EXTRA,
+                    intent.getStringExtra(SunshineService.LOCATION_QUERY_EXTRA));
+            context.startService(sendIntent);
+
+        }
     }
 }
