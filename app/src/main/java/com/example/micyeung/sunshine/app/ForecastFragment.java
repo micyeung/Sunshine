@@ -1,10 +1,8 @@
 package com.example.micyeung.sunshine.app;
 
-import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
@@ -22,6 +20,7 @@ import android.widget.ListView;
 import com.example.micyeung.sunshine.app.data.WeatherContract;
 import com.example.micyeung.sunshine.app.data.WeatherContract.LocationEntry;
 import com.example.micyeung.sunshine.app.data.WeatherContract.WeatherEntry;
+import com.example.micyeung.sunshine.app.sync.SunshineSyncAdapter;
 
 import java.util.Date;
 
@@ -119,11 +118,35 @@ public class ForecastFragment extends Fragment implements LoaderManager.LoaderCa
     }
 
 
-    private void updateWeather() {
-        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
-        String location = prefs.getString(getString(R.string.pref_location_key),getString(R.string.pref_location_default));
+    public void updateWeather() {
+        // 3 Ways to call web service and update/refresh weather
 
+/*
+        // Method 1: Using AsyncTask (FetchWeatherTask)
+
+        String location = Utility.getPreferredLocation(getActivity());
         new FetchWeatherTask(getActivity()).execute(location);
+*/
+
+
+/*
+        // Method 2: Using a service, and fire the service through an alarm manager, 5 secs after hitting refresh
+
+        Intent alarmIntent = new Intent(getActivity(), SunshineService.AlarmReceiver.class);
+        alarmIntent.putExtra(SunshineService.LOCATION_QUERY_EXTRA,
+                Utility.getPreferredLocation(getActivity()));
+
+        // Wrap in a pending intent, so that AlarmManager can fire it under a set of well-defined constraints
+        PendingIntent pi = PendingIntent.getBroadcast(getActivity(),0,alarmIntent,PendingIntent.FLAG_ONE_SHOT);
+        AlarmManager am = (AlarmManager) getActivity().getSystemService(Context.ALARM_SERVICE);
+
+        // Set the AlarmManager to wake up the system
+        am.set(AlarmManager.RTC_WAKEUP, System.currentTimeMillis() + 5000, pi);
+*/
+
+        // Method 3: Using a Sync Adapter
+
+        SunshineSyncAdapter.syncImmediately(getActivity());
     }
 
     @Override

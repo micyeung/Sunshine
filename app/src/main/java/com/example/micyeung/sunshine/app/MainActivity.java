@@ -12,6 +12,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import com.example.micyeung.sunshine.app.sync.SunshineSyncAdapter;
 
 public class MainActivity extends ActionBarActivity implements ForecastFragment.Callback {
     private final String LOG_TAG = MainActivity.class.getSimpleName();
@@ -88,6 +89,9 @@ public class MainActivity extends ActionBarActivity implements ForecastFragment.
         ab.setLogo(R.drawable.ic_logo);
         ab.setDisplayShowTitleEnabled(false);
 
+        // Initializes Sync Adapter. If we're using other ways of pulling data
+        // e.g. with FetchWeatherTask or SunshineService, comment this line out.
+        SunshineSyncAdapter.initializeSyncAdapter(this);
     }
 
 
