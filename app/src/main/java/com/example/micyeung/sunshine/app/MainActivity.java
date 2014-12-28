@@ -11,6 +11,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 
+import com.example.micyeung.sunshine.app.sync.SunshineSyncAdapter;
 public class MainActivity extends ActionBarActivity implements ForecastFragment.Callback {
     private final String LOG_TAG = MainActivity.class.getSimpleName();
     private boolean mTwoPane;
@@ -74,6 +75,12 @@ public class MainActivity extends ActionBarActivity implements ForecastFragment.
         ForecastFragment forecastFragment = (ForecastFragment)getSupportFragmentManager()
                 .findFragmentById(R.id.fragment_forecast);
         forecastFragment.setUseTodayLayout(!mTwoPane);
+        
+        
+
+        // Initializes Sync Adapter. If we're using other ways of pulling data
+        // e.g. with FetchWeatherTask or SunshineService, comment this line out.
+        SunshineSyncAdapter.initializeSyncAdapter(this);
     }
 
 

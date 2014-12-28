@@ -69,6 +69,9 @@ public class SettingsActivity extends PreferenceActivity
         // Are we starting the preference activity?
         if (!mBindingPreference) {
             if (preference.getKey().equals(getString(R.string.pref_location_key))) {
+                // Still using FetchWeatherTask here.
+                // We can replace this with using the SyncAdapter if we like.
+
                 FetchWeatherTask weatherTask = new FetchWeatherTask(this);
                 String location = value.toString();
                 weatherTask.execute(location);
