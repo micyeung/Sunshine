@@ -1,16 +1,22 @@
 package com.example.micyeung.sunshine.app;
 
+import android.app.ActivityOptions;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.res.Resources;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.util.Pair;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.ListView;
 
 import com.example.micyeung.sunshine.app.sync.SunshineSyncAdapter;
 
@@ -134,7 +140,9 @@ public class MainActivity extends ActionBarActivity implements ForecastFragment.
     }
 
     @Override
-    public void onItemSelected(String date) {
+    public void onItemSelected(String date, int visiblePosition) {
+        // date is the date of the list item selected
+        // position is the list position, counted from the visible portion of the list
         if (mTwoPane) {
             // How to pass the selected date to the DetailFragment?
             // Ans: we create an empty DetailFragment, then set its arguments.
@@ -148,11 +156,26 @@ public class MainActivity extends ActionBarActivity implements ForecastFragment.
                     .replace(R.id.weather_detail_container,detailFragment)
                     .commit();
 
-        } else {
+        } else { // Not two-pane
             Intent launchDetailActivityIntent = new Intent(this, DetailActivity.class)
                     .putExtra(DetailActivity.DATE_KEY, date);
-            startActivity(launchDetailActivityIntent);
 
+            // If Lollipop, then perform animation when firing detailed intent
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                View listItemView = ((ListView) findViewById(R.id.listview_forecast))
+                        .getChildAt(visiblePosition);
+                View iconView = listItemView.findViewById(R.id.list_item_icon);
+                View textView = listItemView.findViewById(R.id.list_item_forecast_textview);
+                Resources res = getResources();
+                ActivityOptions activityOptions = ActivityOptions.makeSceneTransitionAnimation(
+                        this,
+                        Pair.create(iconView, res.getString(R.string.transition_image)),
+                        Pair.create(textView, res.getString(R.string.transition_forecast_text))
+                );
+                startActivity(launchDetailActivityIntent, activityOptions.toBundle());
+            } else {
+                startActivity(launchDetailActivityIntent);
+            }
         }
     }
 }

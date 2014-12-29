@@ -54,7 +54,8 @@
         <ImageView
             android:id="@+id/list_item_icon"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
+            android:layout_height="wrap_content"
+            android:transitionName="@string/transition_image"/>
 
         <TextView
             android:id="@+id/list_item_forecast_textview"
@@ -63,6 +64,7 @@
             android:textColor="@color/white"
             android:textAppearance="?android:textAppearanceLarge"
             android:fontFamily="sans-serif-condensed"
+            android:transitionName="@string/transition_forecast_text"
             />
     </LinearLayout>
 </LinearLayout>

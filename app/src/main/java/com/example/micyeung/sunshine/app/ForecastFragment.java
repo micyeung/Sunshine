@@ -3,6 +3,7 @@ package com.example.micyeung.sunshine.app;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
@@ -76,7 +77,7 @@ public class ForecastFragment extends Fragment implements LoaderManager.LoaderCa
         /**
          * DetailFragmentCallback for when an items has been selected
          */
-        public void onItemSelected(String date);
+        public void onItemSelected(String date, int position);
     }
 
 
@@ -121,12 +122,12 @@ public class ForecastFragment extends Fragment implements LoaderManager.LoaderCa
     public void updateWeather() {
         // 3 Ways to call web service and update/refresh weather
 
-/*
+
         // Method 1: Using AsyncTask (FetchWeatherTask)
 
-        String location = Utility.getPreferredLocation(getActivity());
-        new FetchWeatherTask(getActivity()).execute(location);
-*/
+//        String location = Utility.getPreferredLocation(getActivity());
+//        new FetchWeatherTask(getActivity()).execute(location);
+
 
 
 /*
@@ -179,7 +180,9 @@ public class ForecastFragment extends Fragment implements LoaderManager.LoaderCa
                     // on phone, launch DetailActivity;
                     // on tablet, replace DetailFragment
                     ((Callback)getActivity())
-                            .onItemSelected(cursor.getString(COL_WEATHER_DATE));
+                            .onItemSelected(
+                                    cursor.getString(COL_WEATHER_DATE),
+                                    position - mListView.getFirstVisiblePosition() - mListView.getHeaderViewsCount());
 
                     // When item is clicked, store clicked cursor position
                     mCursorPosition = position;
@@ -231,8 +234,27 @@ public class ForecastFragment extends Fragment implements LoaderManager.LoaderCa
         // Swap the new cursor in.  (The framework will take care of closing the
         // old cursor once we return.)
         forecastAdapter.swapCursor(cursor);
+
+        // If cursor position has been previously set, scroll the list to that position
+        //     This can get called if there's a screen orientation.
+        // Else, the cursor position has not been previously set.
+        //     If it's a two-pane mode (i.e. "use today layout"), set it to be the first position by default.
+        //     Else, it's a one-pane mode, so just leave it.
         if (mCursorPosition != ListView.INVALID_POSITION) {
             mListView.smoothScrollToPosition(mCursorPosition);
+        } else {
+            if (!mUseTodayLayout) {
+                mCursorPosition = 0;
+                new Handler().post(new Runnable() {
+                    @Override
+                    public void run() {
+                        mListView.performItemClick(
+                                mListView.getChildAt(mCursorPosition),
+                                mCursorPosition,
+                                mListView.getAdapter().getItemId(mCursorPosition));
+                    }
+                });
+            }
         }
     }
 
