@@ -5,6 +5,7 @@
         <item name="colorPrimary">@color/sunshine_blue</item>
         <item name="colorPrimaryDark">@color/sunshine_dark_blue</item>
         <item name="colorControlHighlight">@color/sunshine_dark_blue</item>
+        <item name="colorAccent">@color/sunshine_green</item>
         <item name="displayOptions">useLogo|showHome</item>
         <item name="logo">@drawable/ic_logo</item>
     </style>

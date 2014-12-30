@@ -263,4 +263,16 @@ public class Utility {
         }
         return -1;
     }
+
+    public static int getYear(String dateStr) {
+        return Integer.parseInt(dateStr.substring(0,4));
+    }
+
+    public static int getMonth(String dateStr) {
+        return Integer.parseInt(dateStr.substring(4,6));
+    }
+
+    public static int getDay(String dateStr) {
+        return Integer.parseInt(dateStr.substring(6,8));
+    }
 }

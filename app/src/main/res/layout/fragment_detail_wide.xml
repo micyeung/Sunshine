@@ -1,6 +1,10 @@
 <!-- Detailed layout for wide screens. For phone landscape and tablet portrait and landscape-->
 <!-- Pointed to by values-land/refs.xml and values-sw600dp/refs.xml; demonstrates layout aliasing -->
 <!-- Master layout. -->
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -103,3 +107,21 @@
         </LinearLayout>
     </LinearLayout>
 </ScrollView>
+    <FrameLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        >
+        <ImageButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/fab"
+            android:layout_marginRight="24dp"
+            android:layout_marginBottom="28dp"
+            android:background="@drawable/fab"
+            android:src="@drawable/ic_event_note_white"
+            android:elevation="2dp"
+            />
+    </FrameLayout>
+</RelativeLayout>

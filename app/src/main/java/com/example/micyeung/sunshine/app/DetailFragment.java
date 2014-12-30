@@ -1,9 +1,13 @@
 package com.example.micyeung.sunshine.app;
 
+import android.annotation.TargetApi;
 import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
+import android.provider.CalendarContract;
+import android.provider.CalendarContract.Events;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
@@ -18,11 +22,15 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.micyeung.sunshine.app.data.WeatherContract;
 import com.example.micyeung.sunshine.app.data.WeatherContract.WeatherEntry;
+
+import java.util.Calendar;
+
 /**
  * Created by micyeung on 12/18/14.
  */
@@ -66,6 +74,7 @@ public class DetailFragment extends Fragment implements LoaderManager.LoaderCall
     private TextView mHumidityView;
     private TextView mWindView;
     private TextView mPressureView;
+    private ImageButton mFab;
 
     public DetailFragment() {
         setHasOptionsMenu(true);
@@ -94,6 +103,33 @@ public class DetailFragment extends Fragment implements LoaderManager.LoaderCall
         mHumidityView = (TextView) rootView.findViewById(R.id.detail_humidity_textview);
         mWindView = (TextView) rootView.findViewById(R.id.detail_wind_textview);
         mPressureView = (TextView) rootView.findViewById(R.id.detail_pressure_textview);
+        mFab = (ImageButton) rootView.findViewById(R.id.fab);
+
+        // Setting Calendar events through intents is only supported from ICS and onwards
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
+            mFab.setVisibility(View.GONE);
+        } else {
+            mFab.setOnClickListener(new View.OnClickListener() {
+                @TargetApi(Build.VERSION_CODES.ICE_CREAM_SANDWICH)
+                @Override
+                public void onClick(View view) {
+                    Calendar beginDate = Calendar.getInstance();
+                    beginDate.set(Utility.getYear(mDateStr),
+                            Utility.getMonth(mDateStr),
+                            Utility.getDay(mDateStr), 0, 0);
+                    Calendar endDate = beginDate;
+                    Intent calIntent = new Intent(Intent.ACTION_INSERT)
+                            .setData(Events.CONTENT_URI)
+                            .putExtra(CalendarContract.EXTRA_EVENT_ALL_DAY, true)
+                            .putExtra(CalendarContract.EXTRA_EVENT_BEGIN_TIME, beginDate.getTimeInMillis())
+                            .putExtra(CalendarContract.EXTRA_EVENT_END_TIME, endDate.getTimeInMillis())
+                            .putExtra(Events.TITLE, "Reminder: " + mDescriptionView.getText())
+                            .putExtra(Events.DESCRIPTION, "Reminder that the forecast is: " + mForecast)
+                            .putExtra(Events.AVAILABILITY, Events.AVAILABILITY_FREE);
+                    startActivity(calIntent);
+                }
+            });
+        }
         return rootView;
     }
 
