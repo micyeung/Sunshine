@@ -1,16 +1,23 @@
 package com.example.micyeung.sunshine.app;
 
+import android.animation.ArgbEvaluator;
+import android.animation.ValueAnimator;
+import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.graphics.drawable.ColorDrawable;
+import android.os.Build;
 import android.preference.PreferenceManager;
+import android.support.v7.app.ActionBarActivity;
+import android.util.TypedValue;
 
 import com.example.micyeung.sunshine.app.data.WeatherContract;
 
 import java.text.DateFormat;
-import java.util.Date;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
 
 /**
  * Created by micyeung on 11/23/14.
@@ -289,5 +296,44 @@ public class Utility {
 
     public static int getDay(String dateStr) {
         return Integer.parseInt(dateStr.substring(6,8));
+    }
+
+    // Get the color value for colorPrimary attribute
+    public static int getPrimaryColor(Context ctx) {
+        TypedValue tv = new TypedValue();
+        ctx.getTheme().resolveAttribute(R.attr.colorPrimary, tv,true);
+        return ctx.getResources().getColor(tv.resourceId);
+    }
+
+    // Change colors of the status bar and action bar of the ActionBarActivity from fromColor to toColor.
+    // If fromColor and toColor are different, do a delightful animation.
+    // If fromColor and toColor are the same, just set the color instantly.
+    @TargetApi(Build.VERSION_CODES.HONEYCOMB)
+    public static void changeBarColor(final ActionBarActivity activity, int fromColor, int toColor) {
+        if (fromColor != toColor) {
+            ValueAnimator bgAnim = ValueAnimator.ofObject(new ArgbEvaluator(),
+                    fromColor,
+                    toColor);
+
+            bgAnim.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+                @Override
+                public void onAnimationUpdate(ValueAnimator valueAnimator) {
+                    int animatedColor = (Integer) valueAnimator.getAnimatedValue();
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                        activity.getWindow().setStatusBarColor(animatedColor);
+                    }
+                    activity.getSupportActionBar().setBackgroundDrawable(new ColorDrawable(animatedColor));
+                }
+            });
+            bgAnim.setStartDelay(800);
+            bgAnim.start();
+        } else {
+            // This is called when the color is already the color that we want (e.g. during screen rotation).
+            // So, don't do animation here.
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                activity.getWindow().setStatusBarColor(toColor);
+            }
+            activity.getSupportActionBar().setBackgroundDrawable(new ColorDrawable(toColor));
+        }
     }
 }

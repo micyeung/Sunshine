@@ -3,6 +3,7 @@ package com.example.micyeung.sunshine.app;
 import android.annotation.TargetApi;
 import android.content.Intent;
 import android.database.Cursor;
+import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -14,6 +15,7 @@ import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
 import android.support.v4.view.MenuItemCompat;
+import android.support.v7.graphics.Palette;
 import android.support.v7.widget.ShareActionProvider;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -39,7 +41,7 @@ public class DetailFragment extends Fragment implements LoaderManager.LoaderCall
     private static final String LOG_TAG = DetailFragment.class.getSimpleName();
     private static final String HASHTAG = "#Sunshine";
     private static final String LOCATION_KEY = "location";
-
+    public static final int INVALID_COLOR = Integer.MAX_VALUE;
 
     public static final String DATE_KEY = "forecast_date";
 
@@ -75,6 +77,13 @@ public class DetailFragment extends Fragment implements LoaderManager.LoaderCall
     private TextView mWindView;
     private TextView mPressureView;
     private ImageButton mFab;
+
+    public interface DetailCallback {
+        /*
+        Callback to be implemented by containing activity
+         */
+        public void doColorChange(int toColor);
+    }
 
     public DetailFragment() {
         setHasOptionsMenu(true);
@@ -212,6 +221,22 @@ public class DetailFragment extends Fragment implements LoaderManager.LoaderCall
         if (data != null && data.moveToFirst()) {
             int weatherId = data.getInt(data.getColumnIndex(WeatherEntry.COLUMN_WEATHER_ID));
             mIconView.setImageResource(Utility.getArtResourceForWeatherCondition(weatherId));
+
+
+            // Using the icon in mIconView, grab the best color, and use that to change the theme color
+            // of the containing activity (through callback).
+            int toColor = INVALID_COLOR;
+            Palette palette = Palette.generate(((BitmapDrawable) mIconView.getDrawable()).getBitmap());
+            for (Palette.Swatch swatch : palette.getSwatches()) {
+                float lightness = swatch.getHsl()[2];
+                if (lightness < 0.6) {
+                    toColor = swatch.getRgb();
+                    break;
+                }
+            }
+            ((DetailCallback) getActivity()).doColorChange(
+                    toColor);
+
 
             // Read date from cursor and update views for day of week and date
             String date = data.getString(data.getColumnIndex(WeatherEntry.COLUMN_DATETEXT));

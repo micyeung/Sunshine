@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.ActivityCompat;
@@ -20,9 +21,14 @@ import android.widget.ListView;
 
 import com.example.micyeung.sunshine.app.sync.SunshineSyncAdapter;
 
-public class MainActivity extends ActionBarActivity implements ForecastFragment.Callback {
+public class MainActivity extends ActionBarActivity implements ForecastFragment.Callback, DetailFragment.DetailCallback {
     private final String LOG_TAG = MainActivity.class.getSimpleName();
     private boolean mTwoPane;
+
+    // This is the current theme (i.e. status bar and action bar) color.
+    // Initialize to an invalid value
+    private int mThemeColor = DetailFragment.INVALID_COLOR;
+    private static final String THEME_COLOR_KEY = "main_activity_theme_color";
 
     @Override
     protected void onDestroy() {
@@ -34,6 +40,12 @@ public class MainActivity extends ActionBarActivity implements ForecastFragment.
     protected void onPause() {
         super.onPause();
         //Log.i("MainActivity","onPause");
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        outState.putInt(THEME_COLOR_KEY, mThemeColor);
+        super.onSaveInstanceState(outState);
     }
 
     @Override
@@ -57,7 +69,9 @@ public class MainActivity extends ActionBarActivity implements ForecastFragment.
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Log.i("MainActivity", "onCreate");
+        if (savedInstanceState != null) {
+            mThemeColor = savedInstanceState.getInt(THEME_COLOR_KEY);
+        }
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -159,7 +173,6 @@ public class MainActivity extends ActionBarActivity implements ForecastFragment.
         } else { // Not two-pane
             Intent launchDetailActivityIntent = new Intent(this, DetailActivity.class)
                     .putExtra(DetailActivity.DATE_KEY, date);
-
             View listItemView = ((ListView) findViewById(R.id.listview_forecast))
                     .getChildAt(visiblePosition);
             View iconView = listItemView.findViewById(R.id.list_item_icon);
@@ -171,6 +184,21 @@ public class MainActivity extends ActionBarActivity implements ForecastFragment.
                     Pair.create(textView, res.getString(R.string.transition_forecast_text))
             );
             ActivityCompat.startActivity(this, launchDetailActivityIntent, activityOptions.toBundle());
+        }
+    }
+
+    // This is only called in two-pane mode, as a callback from DetailFragment
+    @Override
+    public void doColorChange(int toColor) {
+        // Need this check because ValueAnimator methods only work on API 11 and above
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
+            if (mThemeColor == DetailFragment.INVALID_COLOR) {
+                mThemeColor = Utility.getPrimaryColor(this);
+            }
+            int fromColor = mThemeColor;
+            Utility.changeBarColor(this, fromColor, toColor);
+            // Set the theme color to be the new color
+            mThemeColor = toColor;
         }
     }
 }

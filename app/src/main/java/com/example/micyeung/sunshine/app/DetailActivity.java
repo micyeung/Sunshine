@@ -8,12 +8,22 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 
-public class DetailActivity extends ActionBarActivity {
+public class DetailActivity extends ActionBarActivity implements DetailFragment.DetailCallback {
 
+    private static final String LOG_TAG = DetailActivity.class.getSimpleName();
     public static final String DATE_KEY = "forecast_date";
+    public static final String THEME_COLOR_KEY = "detail_activity_theme_color";
+
+    // This is the current theme (i.e. status bar and action bar) color.
+    // Initialize to an invalid value
+    private int mThemeColor = DetailFragment.INVALID_COLOR;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        if (savedInstanceState != null) {
+            mThemeColor = savedInstanceState.getInt(THEME_COLOR_KEY);
+        }
         setContentView(R.layout.activity_detail);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -36,6 +46,11 @@ public class DetailActivity extends ActionBarActivity {
         ab.setDisplayHomeAsUpEnabled(true);
     }
 
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        outState.putInt(THEME_COLOR_KEY, mThemeColor);
+        super.onSaveInstanceState(outState);
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -55,5 +70,16 @@ public class DetailActivity extends ActionBarActivity {
             startActivity(launchSettingsIntent);
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void doColorChange(int toColor) {
+        if (mThemeColor == DetailFragment.INVALID_COLOR) {
+            mThemeColor = Utility.getPrimaryColor(this);
+        }
+        int fromColor = mThemeColor;
+        Utility.changeBarColor(this, fromColor, toColor);
+        // Set the theme color to be the new color
+        mThemeColor = toColor;
     }
 }

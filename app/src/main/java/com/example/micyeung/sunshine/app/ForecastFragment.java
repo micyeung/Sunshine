@@ -75,7 +75,7 @@ public class ForecastFragment extends Fragment implements LoaderManager.LoaderCa
      */
     public interface Callback {
         /**
-         * DetailFragmentCallback for when an items has been selected
+         * Callback for when an items has been selected
          */
         public void onItemSelected(String date, int position);
     }
@@ -260,7 +260,7 @@ public class ForecastFragment extends Fragment implements LoaderManager.LoaderCa
 
     @Override
     public void onSaveInstanceState(Bundle outState) {
-        // When rotated, the current selected list item needs to be saved. However, when no item is selected,
+        // When screen is rotated, the current selected list item needs to be saved. However, when no item is selected,
         // we don't want mCursorPosition to be set to ListView.INVALID_POSITION, so check for that first.
         if (mCursorPosition != ListView.INVALID_POSITION) {
             outState.putInt(SELECTED_KEY,mCursorPosition);
