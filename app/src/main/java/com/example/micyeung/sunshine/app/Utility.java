@@ -325,7 +325,7 @@ public class Utility {
                     activity.getSupportActionBar().setBackgroundDrawable(new ColorDrawable(animatedColor));
                 }
             });
-            bgAnim.setStartDelay(800);
+            bgAnim.setStartDelay(300);
             bgAnim.start();
         } else {
             // This is called when the color is already the color that we want (e.g. during screen rotation).
