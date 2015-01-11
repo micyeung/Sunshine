@@ -1,5 +1,8 @@
 package com.example.micyeung.sunshine.app;
 
+import android.animation.Animator;
+import android.animation.ObjectAnimator;
+import android.annotation.TargetApi;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
@@ -13,10 +16,12 @@ import android.support.v4.util.Pair;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AbsListView;
 import android.widget.ListView;
 
 import com.example.micyeung.sunshine.app.sync.SunshineSyncAdapter;
@@ -73,7 +78,7 @@ public class MainActivity extends ActionBarActivity implements ForecastFragment.
             mThemeColor = savedInstanceState.getInt(THEME_COLOR_KEY);
         }
         setContentView(R.layout.activity_main);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        final Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
         if (findViewById(R.id.weather_detail_container) != null) {
@@ -92,6 +97,44 @@ public class MainActivity extends ActionBarActivity implements ForecastFragment.
             }
         } else {
             mTwoPane = false;
+
+            // In one-pane mode, add the quick-return pattern to the ListView
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
+                final ListView mListView = (ListView) findViewById(R.id.listview_forecast);
+                mListView.setOnScrollListener(new AbsListView.OnScrollListener() {
+                    int mLastFirstVisibleItem = 0;
+
+                    @Override
+                    public void onScrollStateChanged(AbsListView view, int scrollState) {
+                    }
+
+                    @TargetApi(Build.VERSION_CODES.ICE_CREAM_SANDWICH)
+                    @Override
+                    public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
+                        if (view.getId() == mListView.getId()) {
+                            // Convert the toolbar height from dp to pixels, so we know how much to move the toolbar
+                            // to just about get it off screen.
+                            DisplayMetrics metrics = new DisplayMetrics();
+                            getWindowManager().getDefaultDisplay().getMetrics(metrics);
+                            float logicalDensity = metrics.density;
+                            float toolbarHeightInPx =
+                                    getResources().getDimension(R.dimen.action_bar_height) * logicalDensity;
+
+                            final int currentFirstVisibleItem = mListView.getFirstVisiblePosition();
+
+                            if (currentFirstVisibleItem > mLastFirstVisibleItem) {
+                                Animator tbOutAnimator = ObjectAnimator.ofFloat(toolbar, View.TRANSLATION_Y, -toolbarHeightInPx);
+                                tbOutAnimator.start();
+                            } else if (currentFirstVisibleItem < mLastFirstVisibleItem) {
+                                Animator tbInAnimator = ObjectAnimator.ofFloat(toolbar, View.TRANSLATION_Y, 0f);
+                                tbInAnimator.start();
+                            }
+
+                            mLastFirstVisibleItem = currentFirstVisibleItem;
+                        }
+                    }
+                });
+            }
         }
 
         // If it's two-pane mode, then we don't use today-layout for the master (left) layout, i.e. first

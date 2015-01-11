@@ -1,70 +1,84 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- Layout for weather forecast list item for today -->
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:gravity="center_vertical"
-    android:minHeight="?android:attr/listPreferredItemHeight"
-    android:orientation="horizontal"
-    android:background="@drawable/today_touch_selector">
+    android:orientation="vertical">
 
+    <!-- Dummy textview of same height as action bar;
+    ensures action bar does not block any content in the first row -->
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/action_bar_height"/>
+
+    <!--Actual content layout begins here-->
     <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_width="0dp"
-        android:layout_weight="7"
-        android:layout_marginLeft="60dp"
-        android:layout_marginTop="16dp"
-        android:layout_marginBottom="16dp"
-        android:orientation="vertical">
+        android:gravity="center_vertical"
+        android:minHeight="?android:attr/listPreferredItemHeight"
+        android:orientation="horizontal"
+        android:background="@drawable/today_touch_selector">
 
-        <TextView
-            android:id="@+id/list_item_date_textview"
-            android:layout_width="match_parent"
+        <LinearLayout
             android:layout_height="wrap_content"
-            android:textAppearance="?android:textAppearanceLarge"
-            android:fontFamily="sans-serif-condensed"
-            android:textColor="@color/white"
-            android:text="Date"/>
+            android:layout_width="0dp"
+            android:layout_weight="7"
+            android:layout_marginLeft="60dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginBottom="16dp"
+            android:orientation="vertical">
 
-        <TextView
-            android:id="@+id/list_item_high_textview"
-            android:layout_width="match_parent"
+            <TextView
+                android:id="@+id/list_item_date_textview"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:textAppearanceLarge"
+                android:fontFamily="sans-serif-condensed"
+                android:textColor="@color/white"
+                android:text="Date"/>
+
+            <TextView
+                android:id="@+id/list_item_high_textview"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="72sp"
+                android:fontFamily="sans-serif-light"
+                android:textColor="@color/white"
+                android:text="HighTemp"/>
+
+            <TextView
+                android:id="@+id/list_item_low_textview"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="36sp"
+                android:textColor="@color/white"
+                android:layout_marginLeft="8dp"/>
+        </LinearLayout>
+
+        <LinearLayout
             android:layout_height="wrap_content"
-            android:textSize="72sp"
-            android:fontFamily="sans-serif-light"
-            android:textColor="@color/white"
-            android:text="HighTemp"/>
+            android:layout_width="0dp"
+            android:layout_weight="5"
+            android:orientation="vertical"
+            android:gravity="center_horizontal|bottom">
 
-        <TextView
-            android:id="@+id/list_item_low_textview"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:textSize="36sp"
-            android:textColor="@color/white"
-            android:layout_marginLeft="8dp"/>
-    </LinearLayout>
+            <ImageView
+                android:id="@+id/list_item_icon"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:transitionName="@string/transition_image"/>
 
-    <LinearLayout
-        android:layout_height="wrap_content"
-        android:layout_width="0dp"
-        android:layout_weight="5"
-        android:orientation="vertical"
-        android:gravity="center_horizontal|bottom">
-
-        <ImageView
-            android:id="@+id/list_item_icon"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:transitionName="@string/transition_image"/>
-
-        <TextView
-            android:id="@+id/list_item_forecast_textview"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textColor="@color/white"
-            android:textAppearance="?android:textAppearanceLarge"
-            android:fontFamily="sans-serif-condensed"
-            android:transitionName="@string/transition_forecast_text"
-            />
+            <TextView
+                android:id="@+id/list_item_forecast_textview"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/white"
+                android:textAppearance="?android:textAppearanceLarge"
+                android:fontFamily="sans-serif-condensed"
+                android:transitionName="@string/transition_forecast_text"
+                />
+        </LinearLayout>
     </LinearLayout>
 </LinearLayout>

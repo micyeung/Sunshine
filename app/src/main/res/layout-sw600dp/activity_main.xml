@@ -15,7 +15,8 @@ This layout is a two-pane layout for the Sunshine master/detail flow.
         android:layout_height="@dimen/action_bar_height"
         android:layout_width="match_parent"
         android:background="?attr/colorPrimary"
-        app:theme="@style/ToolBarTheme"/>
+        app:theme="@style/ToolBarTheme"
+        android:elevation="@dimen/layer_1"/>
 
     <LinearLayout
         android:layout_width="match_parent"

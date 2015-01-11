@@ -1,16 +1,10 @@
-<LinearLayout
+<RelativeLayout
     android:orientation="vertical"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_height="wrap_content"
-    android:layout_width="wrap_content">
-
-    <android.support.v7.widget.Toolbar
-        android:id="@+id/toolbar"
-        android:layout_height="@dimen/action_bar_height"
-        android:layout_width="match_parent"
-        android:background="?attr/colorPrimary"
-        app:theme="@style/ToolBarTheme"/>
+    android:layout_width="wrap_content"
+    android:clipChildren="false">
 
     <fragment
         xmlns:tools="http://schemas.android.com/tools"
@@ -21,5 +15,19 @@
         tools:context="com.example.micyeung.sunshine.app.ForecastFragment"
         tools:layout="@android:layout/list_content"
         />
-</LinearLayout>
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true">
+        <android.support.v7.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_height="@dimen/action_bar_height"
+            android:elevation="@dimen/layer_1"
+            android:layout_width="match_parent"
+            android:background="?attr/colorPrimary"
+            app:theme="@style/ToolBarTheme"/>
+    </FrameLayout>
+
+</RelativeLayout>
 
