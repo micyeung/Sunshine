@@ -30,7 +30,6 @@ import android.widget.Toast;
 
 import com.example.micyeung.sunshine.app.data.WeatherContract;
 import com.example.micyeung.sunshine.app.data.WeatherContract.WeatherEntry;
-
 /**
  * Created by micyeung on 12/18/14.
  */
@@ -40,6 +39,7 @@ public class DetailFragment extends Fragment implements LoaderManager.LoaderCall
     private static final String HASHTAG = "#Sunshine";
     private static final String LOCATION_KEY = "location";
     private static final String SET_REMINDER_KEY = "set_reminder";
+
 
     public static final String DATE_KEY = "forecast_date";
 
@@ -149,7 +149,7 @@ public class DetailFragment extends Fragment implements LoaderManager.LoaderCall
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        inflater.inflate(R.menu.detailfragment,menu);
+        inflater.inflate(R.menu.detailfragment, menu);
         Log.v(LOG_TAG, "in onCreateOptionsMenu");
         MenuItem shareItem = menu.findItem(R.id.action_share);
         mShareActionProvider = (ShareActionProvider) MenuItemCompat.getActionProvider(shareItem);
@@ -257,6 +257,14 @@ public class DetailFragment extends Fragment implements LoaderManager.LoaderCall
             // If onCreateOptionsMenu has already happened, we need to update the share intent now.
             if (mShareActionProvider != null) {
                 mShareActionProvider.setShareIntent(createShareForecastIntent());
+            }
+        }
+
+        // Starting the Enter transition AFTER data has loaded so that it's clear where the enter transition should end up
+        // Only calling this if it's one-pane mode, i.e. parent Activity is a DetailActivity, not MainActivity
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            if (getActivity() instanceof DetailActivity) {
+                getActivity().startPostponedEnterTransition();
             }
         }
     }
