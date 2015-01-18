@@ -16,8 +16,13 @@ import android.support.v4.util.Pair;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.Toolbar;
+import android.transition.Fade;
+import android.transition.Slide;
+import android.transition.Transition;
+import android.transition.TransitionSet;
 import android.util.DisplayMetrics;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -144,7 +149,6 @@ public class MainActivity extends ActionBarActivity implements ForecastFragment.
                 .findFragmentById(R.id.fragment_forecast);
         forecastFragment.setUseTodayLayout(!mTwoPane);
 
-
         ActionBar ab = getSupportActionBar();
         ab.setDisplayUseLogoEnabled(true);//
         //        ab.setDisplayHomeAsUpEnabled(false);
@@ -155,6 +159,13 @@ public class MainActivity extends ActionBarActivity implements ForecastFragment.
         // Initializes Sync Adapter. If we're using other ways of pulling data
         // e.g. with FetchWeatherTask or SunshineService, comment this line out.
         SunshineSyncAdapter.initializeSyncAdapter(this);
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            getWindow().setAllowReturnTransitionOverlap(true);
+            getWindow().setReenterTransition(new Fade()
+                    .excludeTarget(android.R.id.navigationBarBackground, true)
+                    .excludeTarget(android.R.id.statusBarBackground, true));
+        }
     }
 
 
@@ -192,7 +203,7 @@ public class MainActivity extends ActionBarActivity implements ForecastFragment.
         if (launchMapIntent.resolveActivity(getPackageManager()) != null) {
             startActivity(launchMapIntent);
         } else {
-            Log.d(LOG_TAG,"Could call " + location);
+            Log.d(LOG_TAG, "Could call " + location);
         }
     }
 
@@ -216,10 +227,16 @@ public class MainActivity extends ActionBarActivity implements ForecastFragment.
         } else { // Not two-pane
             Intent launchDetailActivityIntent = new Intent(this, DetailActivity.class)
                     .putExtra(DetailActivity.DATE_KEY, date);
+
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                getWindow().setExitTransition(defineExitTransition(visiblePosition));
+            }
+
             View listItemView = ((ListView) findViewById(R.id.listview_forecast))
                     .getChildAt(visiblePosition);
-            View iconView = listItemView.findViewById(R.id.list_item_icon);
-            View textView = listItemView.findViewById(R.id.list_item_forecast_textview);
+            ForecastAdapter.ViewHolder viewHolder = (ForecastAdapter.ViewHolder) listItemView.getTag();
+            View iconView = viewHolder.iconView;
+            View textView = viewHolder.descriptionView;
             Resources res = getResources();
             ActivityOptionsCompat activityOptions = ActivityOptionsCompat.makeSceneTransitionAnimation(
                     this,
@@ -243,5 +260,40 @@ public class MainActivity extends ActionBarActivity implements ForecastFragment.
             // Set the theme color to be the new color
             mThemeColor = toColor;
         }
+    }
+
+
+    // Returns the Transition that descibes how MainActivity acts when it goes to DetailActivity
+    // Takes in the position in the list that was clicked (counted from the visible portion of the list)
+    // The animation is a splitting apart of the List View
+    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
+    Transition defineExitTransition(int visiblePosition) {
+        ListView lv = (ListView) findViewById(R.id.listview_forecast);
+
+        Transition upperTrans = new Slide(Gravity.TOP)
+                .addTarget(findViewById(R.id.toolbar))
+                .setDuration(800);
+        for (int i=0; i<visiblePosition; i++) {
+            upperTrans.addTarget(lv.getChildAt(i));
+        }
+
+        Transition lowerTrans = new Slide(Gravity.BOTTOM)
+                .setDuration(800);
+        for (int i=visiblePosition+1; i<lv.getChildCount(); i++) {
+            lowerTrans.addTarget(lv.getChildAt(i));
+        }
+
+        Transition middleTrans = new Fade().setDuration(100)
+                .addTarget(lv.getChildAt(visiblePosition));
+
+        TransitionSet ts = new TransitionSet();
+        ts.addTransition(upperTrans)
+                .addTransition(lowerTrans)
+                .addTransition(middleTrans)
+                .setOrdering(TransitionSet.ORDERING_TOGETHER)
+                .excludeTarget(android.R.id.navigationBarBackground, true)
+                .excludeTarget(android.R.id.statusBarBackground, true);
+
+        return ts;
     }
 }
