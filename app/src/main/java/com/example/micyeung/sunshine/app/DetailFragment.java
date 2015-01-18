@@ -285,6 +285,14 @@ public class DetailFragment extends Fragment implements LoaderManager.LoaderCall
                 mShareActionProvider.setShareIntent(createShareForecastIntent());
             }
         }
+
+        // Starting the Enter transition AFTER data has loaded so that it's clear where the enter transition should end up
+        // Only calling this if it's one-pane mode, i.e. parent Activity is a DetailActivity, not MainActivity
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            if (getActivity() instanceof DetailActivity) {
+                getActivity().startPostponedEnterTransition();
+            }
+        }
     }
 
     @Override
