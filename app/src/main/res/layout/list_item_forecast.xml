@@ -6,8 +6,7 @@
     android:layout_height="wrap_content"
     android:gravity="center_vertical"
     android:minHeight="?android:attr/listPreferredItemHeight"
-    android:orientation="horizontal"
-    android:padding="16dp">
+    android:orientation="horizontal">
 
     <ImageView
         android:id="@+id/list_item_icon"
@@ -18,8 +17,7 @@
         android:layout_height="wrap_content"
         android:layout_width="0dp"
         android:layout_weight="1"
-        android:orientation="vertical"
-        android:paddingLeft="16dp">
+        android:orientation="vertical">
 
         <TextView
             android:id="@+id/list_item_date_textview"
