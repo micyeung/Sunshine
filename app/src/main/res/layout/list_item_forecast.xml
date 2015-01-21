@@ -10,7 +10,7 @@
     android:background="@drawable/touch_selector">
 
     <FrameLayout
-        android:layout_width="60dp"
+        android:layout_width="@dimen/listitem_icon_layout_width"
         android:layout_height="wrap_content">
         <ImageView
             android:id="@+id/list_item_icon"
