@@ -4,8 +4,7 @@
     <style name="AppTheme" parent="@style/Theme.AppCompat.Light.NoActionBar">
         <item name="colorPrimary">@color/sunshine_blue</item>
         <item name="colorPrimaryDark">@color/sunshine_dark_blue</item>
-        <item name="displayOptions">useLogo|showHome</item>
-        <item name="logo">@drawable/ic_logo</item>
+        <item name="colorAccent">@color/sunshine_green</item>
     </style>
 
     <style name="ToolBarTheme" parent="AppTheme">
