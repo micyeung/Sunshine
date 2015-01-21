@@ -25,9 +25,9 @@
             android:layout_height="wrap_content"
             android:layout_width="0dp"
             android:layout_weight="7"
-            android:layout_marginLeft="60dp"
-            android:layout_marginTop="16dp"
-            android:layout_marginBottom="16dp"
+            android:layout_marginLeft="@dimen/listitem_today_left_margin"
+            android:layout_marginTop="@dimen/fragment_margin"
+            android:layout_marginBottom="@dimen/fragment_margin"
             android:orientation="vertical">
 
             <TextView
@@ -43,7 +43,7 @@
                 android:id="@+id/list_item_high_textview"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textSize="72sp"
+                android:textSize="@dimen/listitem_today_high_text_size"
                 android:fontFamily="sans-serif-light"
                 android:textColor="@color/white"
                 android:text="HighTemp"/>
@@ -52,9 +52,9 @@
                 android:id="@+id/list_item_low_textview"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textSize="36sp"
+                android:textSize="@dimen/listitem_today_low_text_size"
                 android:textColor="@color/white"
-                android:layout_marginLeft="8dp"/>
+                android:layout_marginLeft="@dimen/textview_large_margin"/>
         </LinearLayout>
 
         <LinearLayout
