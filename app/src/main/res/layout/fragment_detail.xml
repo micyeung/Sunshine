@@ -8,7 +8,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:padding="16dp">
+        android:padding="@dimen/fragment_margin">
 
         <!-- Header: Day, Date -->
         <TextView
@@ -18,7 +18,7 @@
             android:text="Tomorrow"
             android:fontFamily="sans-serif-condensed"
             android:textColor="@color/black"
-            android:textSize="24sp"/>
+            android:textSize="@dimen/detail_day_text_size"/>
 
         <TextView
             android:id="@+id/detail_date_textview"
@@ -27,13 +27,13 @@
             android:text="June 24"
             android:fontFamily="sans-serif-condensed"
             android:textColor="@color/black"
-            android:textSize="16sp"/>
+            android:textSize="@dimen/detail_date_text_size"/>
 
         <!-- Main content: high, low, art, weather state -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_marginTop="16dp"
+            android:layout_marginTop="@dimen/fragment_margin"
             android:gravity="center_horizontal"
             android:orientation="horizontal">
 
@@ -47,7 +47,7 @@
                     android:id="@+id/detail_high_textview"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textSize="96sp"
+                    android:textSize="@dimen/detail_high_text_size"
                     android:layout_gravity="center_horizontal"
                     android:text="21°"/>
 
@@ -56,7 +56,7 @@
                     android:id="@+id/detail_low_textview"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textSize="48sp"
+                    android:textSize="@dimen/detail_low_text_size"
                     android:text="11°"
                     android:layout_gravity="center_horizontal"/>
             </LinearLayout>
@@ -91,7 +91,7 @@
             android:layout_height="wrap_content"
             android:text="48%"
             android:textAppearance="?android:textAppearanceLarge"
-            android:layout_marginTop="4dp"/>
+            android:layout_marginTop="@dimen/textview_margin"/>
 
         <TextView
             android:id="@+id/detail_wind_textview"
@@ -99,7 +99,7 @@
             android:layout_height="wrap_content"
             android:text="6 km/h NW"
             android:textAppearance="?android:textAppearanceLarge"
-            android:layout_marginTop="4dp"/>
+            android:layout_marginTop="@dimen/textview_margin"/>
 
         <TextView
             android:id="@+id/detail_pressure_textview"
@@ -107,6 +107,6 @@
             android:layout_height="wrap_content"
             android:text="1014"
             android:textAppearance="?android:textAppearanceLarge"
-            android:layout_marginTop="4dp"/>
+            android:layout_marginTop="@dimen/textview_margin"/>
     </LinearLayout>
 </ScrollView>
