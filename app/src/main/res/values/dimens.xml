@@ -1,8 +1,17 @@
 <resources>
     <!-- Default screen margins, per the Android Design guidelines. -->
-    <dimen name="activity_horizontal_margin">16dp</dimen>
-    <dimen name="activity_vertical_margin">16dp</dimen>
+    <dimen name="fragment_margin">16dp</dimen>
+    <dimen name="listitem_today_left_margin">60dp</dimen>
+    <dimen name="listitem_icon_layout_width">60dp</dimen>
+    <dimen name="textview_margin">4dp</dimen>
+    <dimen name="textview_large_margin">8dp</dimen>
     <dimen name="action_bar_height">56dp</dimen>
+    <dimen name="detail_day_text_size">24sp</dimen>
+    <dimen name="detail_date_text_size">16sp</dimen>
+    <dimen name="detail_high_text_size">96sp</dimen>
+    <dimen name="detail_low_text_size">48sp</dimen>
+    <dimen name="listitem_today_high_text_size">72sp</dimen>
+    <dimen name="listitem_today_low_text_size">36sp</dimen>
     <dimen name="fab_size">56dp</dimen>
     <dimen name="fab_right_layout_margin">24dp</dimen>
     <dimen name="fab_bottom_layout_margin">28dp</dimen>
