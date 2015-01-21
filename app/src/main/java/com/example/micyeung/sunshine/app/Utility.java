@@ -107,13 +107,15 @@ public class Utility {
         Date inputDate = WeatherContract.getDateFromDb(dateStr);
 
         // If the date we're building the String for is today's date, the format
-        // is "Today, June 24"
+        // is "Today, Dec 24"
         if (todayStr.equals(dateStr)) {
+            SimpleDateFormat shortenedDateFormat = new SimpleDateFormat("MMM dd"); // e.g. Dec 24
+
             String today = context.getString(R.string.today);
             return context.getString(
                     R.string.format_full_friendly_date,
                     today,
-                    getFormattedMonthDay(context, dateStr));
+                    shortenedDateFormat.format(todayDate));
         } else {
             Calendar cal = Calendar.getInstance();
             cal.setTime(todayDate);

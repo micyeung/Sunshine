@@ -4,7 +4,7 @@
 
     <!-- State when a row is being pressed, but hasn't yet been activated (finger down) -->
     <item android:state_pressed="true"
-        android:drawable="@color/grey" />
+        android:drawable="@color/sunshine_light_blue" />
 
     <!-- Used when the view is "activated". -->
     <item android:state_activated="true"
