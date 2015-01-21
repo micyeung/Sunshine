@@ -10,6 +10,7 @@
         android:layout_height="@dimen/action_bar_height"
         android:layout_width="match_parent"
         android:background="?attr/colorPrimary"
+        android:elevation="@dimen/layer_1"
         app:theme="@style/ToolBarTheme"/>
 
     <fragment
