@@ -57,4 +57,11 @@
     <string name="pref_enable_notifications_true">Enabled</string>
     <string name="pref_enable_notifications_false">Not Enabled</string>
     <string name="pref_enable_notifications_default" translatable="false">true</string>
+
+    <!-- Strings related to transition animations -->
+    <string name="transition_image" translatable="false">transition_image</string>
+    <string name="transition_forecast_text" translatable="false">transition_forecast_text</string>
+
+    <string name="toast_added_reminder">Added reminder.</string>
+    <string name="toast_deleted_reminder">Removed reminder.</string>
 </resources>
