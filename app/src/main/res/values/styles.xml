@@ -4,6 +4,7 @@
     <style name="AppTheme" parent="@style/Theme.AppCompat.Light.NoActionBar">
         <item name="colorPrimary">@color/sunshine_blue</item>
         <item name="colorPrimaryDark">@color/sunshine_dark_blue</item>
+        <item name="colorControlHighlight">@color/sunshine_dark_blue</item>
         <item name="colorAccent">@color/sunshine_green</item>
     </style>
 
