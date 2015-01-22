@@ -1,9 +1,5 @@
 package com.example.micyeung.sunshine.app;
 
-import android.animation.Animator;
-import android.animation.AnimatorListenerAdapter;
-import android.animation.AnimatorSet;
-import android.animation.ObjectAnimator;
 import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
@@ -23,10 +19,8 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.example.micyeung.sunshine.app.data.WeatherContract;
 import com.example.micyeung.sunshine.app.data.WeatherContract.WeatherEntry;
@@ -38,7 +32,6 @@ public class DetailFragment extends Fragment implements LoaderManager.LoaderCall
     private static final String LOG_TAG = DetailFragment.class.getSimpleName();
     private static final String HASHTAG = "#Sunshine";
     private static final String LOCATION_KEY = "location";
-    private static final String SET_REMINDER_KEY = "set_reminder";
 
 
     public static final String DATE_KEY = "forecast_date";
@@ -47,7 +40,6 @@ public class DetailFragment extends Fragment implements LoaderManager.LoaderCall
     private String mLocation;
     private String mForecast;
     private String mDateStr;
-    private boolean mReminderSet = false;
 
     private static final int DETAIL_LOADER = 0;
 
@@ -75,7 +67,6 @@ public class DetailFragment extends Fragment implements LoaderManager.LoaderCall
     private TextView mHumidityView;
     private TextView mWindView;
     private TextView mPressureView;
-    private ImageButton mFab;
 
     public DetailFragment() {
         setHasOptionsMenu(true);
@@ -92,7 +83,6 @@ public class DetailFragment extends Fragment implements LoaderManager.LoaderCall
         }
         if (savedInstanceState != null) {
             mLocation = savedInstanceState.getString(LOCATION_KEY);
-            mReminderSet = savedInstanceState.getBoolean(SET_REMINDER_KEY);
         }
 
         View rootView = inflater.inflate(R.layout.fragment_detail, container, false);
@@ -105,27 +95,6 @@ public class DetailFragment extends Fragment implements LoaderManager.LoaderCall
         mHumidityView = (TextView) rootView.findViewById(R.id.detail_humidity_textview);
         mWindView = (TextView) rootView.findViewById(R.id.detail_wind_textview);
         mPressureView = (TextView) rootView.findViewById(R.id.detail_pressure_textview);
-        mFab = (ImageButton) rootView.findViewById(R.id.fab);
-
-        mFab.setImageResource(mReminderSet ?
-                R.drawable.ic_event_unset_white :
-                R.drawable.ic_event_set_white );
-        mFab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (!mReminderSet) {
-                    mFab.setImageResource(R.drawable.ic_event_set_white);
-                    animateFab(R.drawable.ic_event_unset_white,
-                            R.string.toast_added_reminder);
-                    mReminderSet = true;
-                } else {
-                    mFab.setImageResource(R.drawable.ic_event_unset_white);
-                    animateFab(R.drawable.ic_event_set_white,
-                            R.string.toast_deleted_reminder);
-                    mReminderSet = false;
-                }
-            }
-        });
 
         return rootView;
     }
@@ -133,7 +102,6 @@ public class DetailFragment extends Fragment implements LoaderManager.LoaderCall
     @Override
     public void onSaveInstanceState(Bundle outState) {
         outState.putString(LOCATION_KEY, mLocation);
-        outState.putBoolean(SET_REMINDER_KEY, mReminderSet);
         super.onSaveInstanceState(outState);
     }
 
@@ -173,7 +141,6 @@ public class DetailFragment extends Fragment implements LoaderManager.LoaderCall
         super.onActivityCreated(savedInstanceState);
         if (savedInstanceState != null) {
             mLocation = savedInstanceState.getString(LOCATION_KEY);
-            mReminderSet = savedInstanceState.getBoolean(SET_REMINDER_KEY);
         }
         Bundle arguments = getArguments();
         if (arguments != null && arguments.containsKey(DetailActivity.DATE_KEY)) {
@@ -272,51 +239,6 @@ public class DetailFragment extends Fragment implements LoaderManager.LoaderCall
     @Override
     public void onLoaderReset(Loader<Cursor> cursorLoader) {
 
-    }
-
-    // Animates the Fab to toImg.
-    // Also displays a toast at the end of the animation.
-    private void animateFab(final int toImgResId, final int toastMsgResId) {
-        int duration = getActivity().getResources().getInteger(
-                android.R.integer.config_shortAnimTime);
-        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.HONEYCOMB_MR2) {
-            Animator outAnimator = ObjectAnimator.ofFloat(mFab, View.ALPHA, 0f);
-            outAnimator.setDuration(duration / 2);
-            outAnimator.addListener(new AnimatorListenerAdapter() {
-                @Override
-                public void onAnimationEnd(Animator animation) {
-                    mFab.setImageResource(toImgResId);
-                }
-            });
-
-            AnimatorSet inAnimator = new AnimatorSet();
-            inAnimator.playTogether(
-                    ObjectAnimator.ofFloat(mFab, View.ALPHA, 1f),
-                    ObjectAnimator.ofFloat(mFab, View.SCALE_X, 0f, 1f),
-                    ObjectAnimator.ofFloat(mFab, View.SCALE_Y, 0f, 1f)
-            );
-            inAnimator.addListener(new AnimatorListenerAdapter() {
-                @Override
-                public void onAnimationEnd(Animator animation) {
-                    Toast.makeText(getActivity(),
-                            getResources().getText(toastMsgResId),
-                            Toast.LENGTH_SHORT)
-                            .show();
-                }
-            });
-
-
-            AnimatorSet set = new AnimatorSet();
-            set.playSequentially(outAnimator, inAnimator);
-            set.start();
-        } else {
-            // Animation not supported in this device, so no animation
-            mFab.setImageResource(toImgResId);
-            Toast.makeText(getActivity(),
-                    getResources().getText(toastMsgResId),
-                    Toast.LENGTH_SHORT)
-                    .show();
-        }
     }
 }
 
