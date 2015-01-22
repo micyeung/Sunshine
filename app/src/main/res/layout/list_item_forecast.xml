@@ -16,8 +16,7 @@
             android:id="@+id/list_item_icon"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:transitionName="@string/transition_image"/>
+            android:layout_gravity="center_horizontal"/>
     </FrameLayout>
 
     <LinearLayout
@@ -40,8 +39,7 @@
             android:layout_height="wrap_content"
             android:fontFamily="sans-serif-condensed"
             android:textAppearance="?android:textAppearanceSmall"
-            android:text="Hightemp"
-            android:transitionName="@string/transition_forecast_text"/>
+            android:text="Hightemp"/>
 
     </LinearLayout>
 
@@ -57,8 +55,7 @@
             android:layout_height="wrap_content"
             android:fontFamily="sans-serif-condensed"
             android:textAppearance="?android:textAppearanceLarge"
-            android:layout_gravity="center"
-            />
+            android:layout_gravity="center"/>
 
         <TextView
             android:id="@+id/list_item_low_textview"

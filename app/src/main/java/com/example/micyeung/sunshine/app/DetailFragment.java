@@ -3,7 +3,6 @@ package com.example.micyeung.sunshine.app;
 import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -95,7 +94,6 @@ public class DetailFragment extends Fragment implements LoaderManager.LoaderCall
         mHumidityView = (TextView) rootView.findViewById(R.id.detail_humidity_textview);
         mWindView = (TextView) rootView.findViewById(R.id.detail_wind_textview);
         mPressureView = (TextView) rootView.findViewById(R.id.detail_pressure_textview);
-
         return rootView;
     }
 
@@ -224,14 +222,6 @@ public class DetailFragment extends Fragment implements LoaderManager.LoaderCall
             // If onCreateOptionsMenu has already happened, we need to update the share intent now.
             if (mShareActionProvider != null) {
                 mShareActionProvider.setShareIntent(createShareForecastIntent());
-            }
-        }
-
-        // Starting the Enter transition AFTER data has loaded so that it's clear where the enter transition should end up
-        // Only calling this if it's one-pane mode, i.e. parent Activity is a DetailActivity, not MainActivity
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            if (getActivity() instanceof DetailActivity) {
-                getActivity().startPostponedEnterTransition();
             }
         }
     }
