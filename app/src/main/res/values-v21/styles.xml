@@ -5,11 +5,9 @@
         <item name="colorPrimary">@color/sunshine_blue</item>
         <item name="colorPrimaryDark">@color/sunshine_dark_blue</item>
         <item name="colorControlHighlight">@color/sunshine_dark_blue</item>
-        <item name="displayOptions">useLogo|showHome</item>
-        <item name="logo">@drawable/ic_logo</item>
+        <item name="colorAccent">@color/sunshine_green</item>
         <item name="android:windowContentTransitions">true</item>
         <item name="android:windowActivityTransitions">true</item>
-
         <item name="android:windowSharedElementEnterTransition">@android:transition/move</item>
         <item name="android:windowSharedElementExitTransition">@android:transition/move</item>
         <item name="android:windowSharedElementReturnTransition">@android:transition/move</item>
