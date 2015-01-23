@@ -52,8 +52,7 @@ public class DetailActivity extends ActionBarActivity implements DetailFragment.
                     .excludeTarget(android.R.id.statusBarBackground, true));
 
             getWindow().setReturnTransition(new Explode()
-                    .excludeTarget(android.R.id.navigationBarBackground, true)
-                    .excludeTarget(android.R.id.statusBarBackground, true));
+                    .excludeTarget(android.R.id.navigationBarBackground, true));
 
             postponeEnterTransition();
         }

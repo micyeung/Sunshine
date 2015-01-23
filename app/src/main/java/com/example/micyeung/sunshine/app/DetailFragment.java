@@ -159,7 +159,7 @@ public class DetailFragment extends Fragment implements LoaderManager.LoaderCall
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        inflater.inflate(R.menu.detailfragment,menu);
+        inflater.inflate(R.menu.detailfragment, menu);
         Log.v(LOG_TAG, "in onCreateOptionsMenu");
         MenuItem shareItem = menu.findItem(R.id.action_share);
         mShareActionProvider = (ShareActionProvider) MenuItemCompat.getActionProvider(shareItem);
@@ -225,18 +225,23 @@ public class DetailFragment extends Fragment implements LoaderManager.LoaderCall
 
             // Using the icon in mIconView, grab the best color, and use that to change the theme color
             // of the containing activity (through callback).
-            int toColor = INVALID_COLOR;
-            Palette palette = Palette.generate(((BitmapDrawable) mIconView.getDrawable()).getBitmap());
-            for (Palette.Swatch swatch : palette.getSwatches()) {
-                float lightness = swatch.getHsl()[2];
-                if (lightness < 0.6) {
-                    toColor = swatch.getRgb();
-                    break;
-                }
-            }
-            ((DetailCallback) getActivity()).doColorChange(
-                    toColor);
-
+            //final Integer
+            Palette.generateAsync(
+                    ((BitmapDrawable) mIconView.getDrawable()).getBitmap(),
+                    new Palette.PaletteAsyncListener() {
+                        @Override
+                        public void onGenerated(Palette palette) {
+                            int toColor = INVALID_COLOR;
+                            for (Palette.Swatch swatch : palette.getSwatches()) {
+                                float lightness = swatch.getHsl()[2];
+                                if (lightness < 0.6) {
+                                    toColor = swatch.getRgb();
+                                    break;
+                                }
+                            }
+                            ((DetailCallback) getActivity()).doColorChange(toColor);
+                        }
+                    });
 
             // Read date from cursor and update views for day of week and date
             String date = data.getString(data.getColumnIndex(WeatherEntry.COLUMN_DATETEXT));
