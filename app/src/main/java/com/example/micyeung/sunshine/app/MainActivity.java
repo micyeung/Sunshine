@@ -108,8 +108,7 @@ public class MainActivity extends ActionBarActivity implements ForecastFragment.
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             getWindow().setAllowReturnTransitionOverlap(true);
             getWindow().setReenterTransition(new Fade()
-                    .excludeTarget(android.R.id.navigationBarBackground, true)
-                    .excludeTarget(android.R.id.statusBarBackground, true));
+                    .excludeTarget(android.R.id.navigationBarBackground, true));
         }
     }
 
