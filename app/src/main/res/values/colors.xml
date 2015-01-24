@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="sunshine_light_blue">#ff64c2f4</color>
+    <color name="sunshine_blue">#ff1ca8f4</color>
+    <color name="sunshine_dark_blue">#2196F3</color>
+    <color name="sunshine_yellow">#ffeb3b</color>
+    <color name="sunshine_green">#00897B</color>
+    <color name="purple">#ff00ff</color>
+    <color name="white">#ffffff</color>
+    <color name="black">#000000</color>
+</resources>
