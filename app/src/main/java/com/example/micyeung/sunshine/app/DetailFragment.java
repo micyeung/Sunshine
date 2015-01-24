@@ -225,7 +225,6 @@ public class DetailFragment extends Fragment implements LoaderManager.LoaderCall
 
             // Using the icon in mIconView, grab the best color, and use that to change the theme color
             // of the containing activity (through callback).
-            //final Integer
             Palette.generateAsync(
                     ((BitmapDrawable) mIconView.getDrawable()).getBitmap(),
                     new Palette.PaletteAsyncListener() {
