@@ -150,11 +150,7 @@ public class MainActivity extends ActionBarActivity implements ForecastFragment.
         forecastFragment.setUseTodayLayout(!mTwoPane);
 
         ActionBar ab = getSupportActionBar();
-        ab.setDisplayUseLogoEnabled(true);//
-        //        ab.setDisplayHomeAsUpEnabled(false);
-        ab.setDisplayShowHomeEnabled(true);
-        ab.setLogo(R.drawable.ic_logo);
-        ab.setDisplayShowTitleEnabled(false);
+        ab.setDisplayShowTitleEnabled(true);
 
         // Initializes Sync Adapter. If we're using other ways of pulling data
         // e.g. with FetchWeatherTask or SunshineService, comment this line out.
