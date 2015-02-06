@@ -5,6 +5,7 @@ import android.animation.ValueAnimator;
 import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
 import android.preference.PreferenceManager;
@@ -320,7 +321,7 @@ public class Utility {
                 public void onAnimationUpdate(ValueAnimator valueAnimator) {
                     int animatedColor = (Integer) valueAnimator.getAnimatedValue();
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                        activity.getWindow().setStatusBarColor(animatedColor);
+                        activity.getWindow().setStatusBarColor(getDarkerColor(animatedColor));
                     }
                     activity.getSupportActionBar().setBackgroundDrawable(new ColorDrawable(animatedColor));
                 }
@@ -331,9 +332,17 @@ public class Utility {
             // This is called when the color is already the color that we want (e.g. during screen rotation).
             // So, don't do animation here.
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                activity.getWindow().setStatusBarColor(toColor);
+                activity.getWindow().setStatusBarColor(getDarkerColor(toColor));
             }
             activity.getSupportActionBar().setBackgroundDrawable(new ColorDrawable(toColor));
         }
+    }
+
+    // Given color, return a slightly darker version of the color
+    public static int getDarkerColor(int color) {
+        float[] hsv = new float[3];
+        Color.colorToHSV(color, hsv);
+        hsv[2] *= 0.9f;
+        return Color.HSVToColor(hsv);
     }
 }
