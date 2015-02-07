@@ -45,6 +45,9 @@ public class DetailActivity extends ActionBarActivity {
         if (id == R.id.action_settings) {
             Intent launchSettingsIntent = new Intent(this,SettingsActivity.class);
             startActivity(launchSettingsIntent);
+        } else if (id == android.R.id.home) {
+            onBackPressed();
+            return true;
         }
         return super.onOptionsItemSelected(item);
     }
