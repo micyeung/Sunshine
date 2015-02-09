@@ -7,12 +7,7 @@ import android.util.Log;
 
 import org.json.JSONException;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.URL;
+import java.util.concurrent.ExecutionException;
 
 /**
  * Created by micyeung on 11/21/14.
@@ -35,13 +30,11 @@ public class FetchWeatherTask extends AsyncTask<String, Void, Void> {
         if (params.length == 0) {
             return null;
         }
+
         String locationQuery = params[0];
         String format = "json";
         String units = "metric";
         int numDays = 14;
-        HttpURLConnection urlConnection = null;
-        BufferedReader reader = null;
-        String forecastJsonStr = null;
         final String BASE_URI = "http://api.openweathermap.org/data/2.5/forecast/daily?";
         final String QUERY_PARAM = "q";
         final String FORMAT_PARAM = "mode";
@@ -53,44 +46,14 @@ public class FetchWeatherTask extends AsyncTask<String, Void, Void> {
                 .appendQueryParameter(UNIT_PARAM, units)
                 .appendQueryParameter(DAYS_PARAM, Integer.toString(numDays))
                 .build();
-
         try {
-            URL url = new URL(uri.toString());
-            urlConnection = (HttpURLConnection) url.openConnection();
-            urlConnection.setRequestMethod("GET");
-            urlConnection.connect();
-
-            InputStream inputStream = urlConnection.getInputStream();
-            StringBuffer buffer = new StringBuffer();
-            if (inputStream == null) {
-                return null;
-            }
-            reader = new BufferedReader(new InputStreamReader(inputStream));
-
-            String line;
-            while ((line = reader.readLine()) != null) {
-                buffer.append(line + "\n");
-            }
-            if (buffer.length() == 0) {
-                forecastJsonStr = null;
-            } else {
-                forecastJsonStr = buffer.toString();
-            }
-        } catch (java.io.IOException e) {
-            e.printStackTrace();
-        } finally {
-            urlConnection.disconnect();
-            if (reader != null) {
-                try {
-                    reader.close();
-                } catch (IOException e) {
-                    Log.e(LOG_TAG, "Error closing stream", e);
-                }
-            }
-        }
-        WeatherDataParser wdp = new WeatherDataParser();
-        try {
+            String forecastJsonStr = NetworkManager.getInstance(mContext).syncRequest(new NetworkManager.StringRequestBuilder().url(uri.toString()));
+            WeatherDataParser wdp = new WeatherDataParser();
             wdp.getWeatherDataFromJson(forecastJsonStr, numDays, locationQuery, mContext);
+        } catch (InterruptedException e) {
+            Log.e(LOG_TAG, e.toString());
+        } catch (ExecutionException e) {
+            Log.e(LOG_TAG, e.toString());
         } catch (JSONException e) {
             Log.e(LOG_TAG, e.toString());
         }
